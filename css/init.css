@@ -1,0 +1,19 @@
+html{height:100%;}
+body{height:100%;background:#FFFFFF;overflow-x:hidden;-webkit-user-select:none;-webkit-text-size-adjust:none;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,select,textarea,p,blockquote,th,td,legend,button{margin:0;padding:0;color:#333;font-family:'Malgun Gothic','Droid Sans','Apple-Gothic','애플고딕','Tahoma',dotum,'돋움',gulim,'굴림',sans-serif;font-weight:bold;font-size:16px;line-height: 1.25em;-webkit-text-size-adjust:none;}/*사파리 회전시 폰트 크기 고정하기*/
+form,fieldset,img{border:0;}
+
+table{border-spacing:0;border-collapse:collapse;}
+hr,legend,caption{display:none;}
+img,fieldset,button{border:0 none;}
+ul,ol,li{list-style:none outside;}
+img,input,select,textarea{vertical-align:middle;}
+textarea{-webkit-border-radius:0;-webkit-appearance:none;}
+select{padding:0 0 0 6px;letter-spacing:0;-webkit-border-radius:0;-webkit-appearance:none;}
+a{text-decoration:none;color:#3b3b3b;}
+a:link,a:hover,a:active{text-decoration:none;}
+li,p,dt,dd,div,span{word-break:break-all;}
+.hp{visibility:hidden;width:0;height:0;overflow:hidden;position:absolute;top:-10000px;font-size:0;line-height:0;}
+input[type="text"] , input[type="number"] {border:1px solid #aaa;color:#656565;font-size:0.81em;border-radius:0;-webkit-border-radius:0;-webkit-appearance:none;box-shadow:none;}/*140213*/
+input[type="password"]{border:1px solid #aaa;color:#656565;font-size:0.81em;border-radius:0;-webkit-border-radius:0;-webkit-appearance:none;box-shadow:none;}
+input[type="tel"]{border:1px solid #aaa;color:#656565;font-size:0.81em;border-radius:0;-webkit-border-radius:0;-webkit-appearance:none;box-shadow:none;}

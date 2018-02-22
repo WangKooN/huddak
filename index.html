@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html data-ng-app data-ng-controller="TrafficListController">
+<head>
+	<meta charset="utf-8" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="msapplication-tap-highlight" content="no" />
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />	
+	<title>후다닥 스테이션 v1.4.0.150726</title>
+	<!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+	<!-- Main Layout CSS Loaded -->
+	<link rel="stylesheet" type="text/css" href="css/init.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<!-- Phonegap Execute -->
+	<script type="text/javascript" src="cordova.js"></script>	
+	
+	<!-- Plug-in Loaded -->
+	<script type="text/javascript" src="js/fastclick.js"></script>
+	<script type="text/javascript" src="js/splashScreen.js"></script>
+	<!-- Library Loaded -->
+	<script type="text/javascript" src="lib/jquery-1.11.2.min.js"></script>		
+	<!-- Framework Loaded -->
+	<script type="text/javascript" src="js/angular.min.js"></script>	
+	<!-- Plugin Loaded -->
+	<!--script type="text/javascript" src="js/e-smart-zoom-jquery.min.js"></script-->
+	<script type="text/javascript" src="js/jquery.svg.min.js"></script>
+	<!-- Main Script Loaded -->	
+	<script type="text/javascript">
+	var noticeFind = false;
+	</script>
+	<script type="text/javascript" src="http://csd.cafe24.com/huddak1/notice_v140.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>	
+	<script type="text/javascript">
+	app.initialize();
+	</script>
+</head>
+<body>	
+    <!-- S :: 공지사항 -->
+    <div id="notice">
+    	<div class="board font_GothamL2">
+    		<div class="boardTit font_GothamL2">공지사항</div>
+			<div class="boardCon font_GothamL2"></div>
+			<div class="btnCloseForever font_GothamL2" onclick="neverShowNotice();" onkeypress="this.onclick">더이상 열지않기</div>
+			<div class="btnClose font_GothamL2" onclick="$(this).parent().parent().fadeOut(200)" onkeypress="this.onclick">닫기</div>
+    	</div>    	
+    </div>
+    <!-- E :: 공지사항 -->
+
+    <!-- S :: Loades -->
+	<section class="loaders">
+		<span class="loader loader-quart"></span>
+		<span class="loader loader-text font_GothamL2">역리스트를 가져오는중...</span>
+	</section>
+	<!-- E : Loaders -->
+
+	<!-- S : 상단 바 -->
+	<div id="hdStaHeader">
+		<div class="headerLoc font_nanumBarunL">주소를 찾는중...</div>
+		<div class="btnConfig font_nanumBarunL" onclick="$('#hdStaMenu').show();viewSelMenuInit()" onkeypress="this.onclick"><p class="ico_menu"></p></div>
+	</div>
+	<!-- E : 상단 바 -->
+
+	<!-- S : 역명 키워드 입력 -->	
+	<div id="hdStaInp">
+		<div class="input_inner">			
+			<input class="font_nanumBarunL" type="text" data-ng-model="searchSubway.stationName" placeholder="역명을 입력하세요." />
+		</div>
+	</div>
+	<!-- E : 역명 키워드 입력 -->
+
+	<!-- S : 역명 리스트 출력 -->
+	<div id="hdStaSubway">
+		<ul class="subwayList">
+			<li data-ng-repeat="station in subwayData | filter: searchSubway | orderBy : 'distance'" data-idx="{{ station.idx }}" data-ng-if="$index < 10 && station.use == 'Y'" data-line="{{station.lineCode}}" data-station="{{station.stationNum}}" class="line{{station.lineCode}}" >
+				<div class="subwayListCont">
+					<div class="lineNum font_GothamL2" onclick="$(this).parent().find('.staName .staNameKor').click()" onkeypress="this.onclick">{{station.lineNum.replace("경의중앙선","경의중앙")}}</div>
+					<div class="staName" data-ng-click="realTimeArrive($event,station.idx,station.stationName)">
+						<div class="staNameKor font_nanumBarunL">{{station.stationName}} </div>
+						<div class="staNameEng font_GothamL">{{station.stationNmEng}}</div>
+					</div>
+					<div class="btnInfo" data-ng-click="showStationData(station.idx)"></div>
+					<div class="showDistance font_GothamL">{{station.distance}} km</div>
+					<div class="btnRefresh">
+						<p class="btnRefreshArea" data-ng-click="fncRefresh($event,station.idx,station.stationName)"></p>
+					</div>
+				</div>
+				<div class="subwayArriveView">
+				<ul></ul>
+				</div>
+			</li>	
+		</ul>
+	</div>
+	<!-- E : 역명 리스트 출력 -->
+
+	<!-- S : 실시간 열차 위치 보기  v1.3.0.150720 추가 -->
+	<!-- S : 열차 위치 메뉴 -->
+	<div id="hdStaSwPosMenu">		
+		<div class="swPosMenuTxt">
+			<a href="" class="btn_menu" onclick="$('.swPosExtMenu').fadeIn(200)"></a>
+			<div class="line_num font_nanumBarunL"></div>
+			<div class="btnRefresh">
+				<p class="btnRefreshArea" onclick="releaseTrainPos(appVar.trainPosLine,appVar.trainPosName);"></p>
+			</div>
+		</div>
+		<div class="swPosExtMenu">
+		<ul>
+			<li class="font_nanumBarunL line1001" onclick="releaseTrainPos(1001,false)"><p class="ico_line"></p>1호선</li>
+			<li class="font_nanumBarunL line1002" onclick="releaseTrainPos(1002,false)"><p class="ico_line"></p>2호선</li>
+			<li class="font_nanumBarunL line1003" onclick="releaseTrainPos(1003,false)"><p class="ico_line"></p>3호선</li>
+			<li class="font_nanumBarunL line1004" onclick="releaseTrainPos(1004,false)"><p class="ico_line"></p>4호선</li>
+			<li class="font_nanumBarunL line1005" onclick="releaseTrainPos(1005,false)"><p class="ico_line"></p>5호선</li>
+			<li class="font_nanumBarunL line1006" onclick="releaseTrainPos(1006,false)"><p class="ico_line"></p>6호선</li>
+			<li class="font_nanumBarunL line1007" onclick="releaseTrainPos(1007,false)"><p class="ico_line"></p>7호선</li>
+			<li class="font_nanumBarunL line1008" onclick="releaseTrainPos(1008,false)"><p class="ico_line"></p>8호선</li>
+			<li class="font_nanumBarunL line1009" onclick="releaseTrainPos(1009,false)"><p class="ico_line"></p>9호선</li>
+			<li class="font_nanumBarunL line1067" onclick="releaseTrainPos(1067,false)"><p class="ico_line"></p>경춘선</li>
+			<li class="font_nanumBarunL line1063" onclick="releaseTrainPos(1063,false)"><p class="ico_line"></p>경의중앙선</li>
+			<li class="font_nanumBarunL line1065" onclick="releaseTrainPos(1065,false)"><p class="ico_line"></p>공항철도</li>
+			<li class="font_nanumBarunL line1075" onclick="releaseTrainPos(1075,false)"><p class="ico_line"></p>분당선</li>
+			<li class="font_nanumBarunL line1077" onclick="releaseTrainPos(1077,false)"><p class="ico_line"></p>신분당선</li>
+			<li class="font_nanumBarunL line1069" onclick="releaseTrainPos(1069,false)"><p class="ico_line"></p>인천1호선</li>
+			<li class="font_nanumBarunL line1071" onclick="releaseTrainPos(1071,false)"><p class="ico_line"></p>수인선</li>
+		</ul>		
+		</div>
+	</div>
+	<!-- E : 열차 위치 메뉴 -->
+	
+	<!-- S : 열차 위치 리스트 -->
+	<div id="hdStaSwPos">	
+	</div>
+	<!-- E : 열차 위치 리스트 -->
+	<!-- E : 실시간 열차 위치 보기  v1.3.0.150720 추가 -->
+
+	<!-- S : 역정보 레이아웃 -->
+	<div id="hdStaSubwayInfo">
+		<div class="btnInfoClose" onclick="$(this).parent().fadeOut(0)" onkeypress="this.onclick"></div>
+		<div class="btnClose" onclick="$(this).parent().fadeOut(0)" onkeypress="this.onclick"></div>
+		<div class="infoCon">
+			<div class="infoStaNum"></div>
+			<div class="infoStaName font_nanumBarunL"></div>
+			<div class="infoStaNameEng font_GothamL"></div>
+			<div class="infoStaInfo">
+				<div class="info info_con1"></div>
+				<div class="info info_con2"><span class="info_txt font_nanumBarunL"></span></div>
+				<div class="info info_con3"><span class="info_txt font_nanumBarunL"></span></div>
+				<div class="info info_con4"><span class="info_txt font_nanumBarunL"></span></div>
+			</div>
+			<!-- S : 역정보 탭 역역 추가 v1.2.1.150524 -->
+			<ul class="infoMenu">
+				<li class="font_nanumBarunL">첫차/막차 정보</li>
+				<li class="font_nanumBarunL">출구 정보</li>
+			</ul>
+			<div class="infoStaCon infoStaTimetable"></div>
+			<div class="infoStaCon infoStaGate"></div>
+			<!-- E : 역정보 탭 역역 추가 v1.2.1.150524 -->
+
+			<div class="infoStaFirTrain trainTimetable"></div>
+			<div class="infoStaLstTrain trainTimetable"></div>
+			<div class="infoStaOrigin font_nanumBarunL">정보제공 : 서울시 교통정보센터</div>			
+		</div>
+	</div>
+	<div class="infoStaOrigin font_nanumBarunL">정보제공 : 서울시 교통정보센터</div>
+	<!-- S : 역정보 레이아웃 --> 
+
+	<!-- S : 메뉴 레이아웃 -->
+	<div id="hdStaMenu">
+		<div class="btnMenuClose" onclick="$(this).parent().fadeOut(0)" onkeypress="this.onclick"></div>
+		<div class="menuCon">
+		<ul>
+			<li class="btnMenuRTM on" onclick="viewSelMenu('#hdStaSubway');"><div class="icon"><img src="img/icoMenuRTM.svg" alt="실시간 도착정보"/></div></li>
+			<li class="btnMenuRPM" onclick="viewSelMenu('#hdStaSwPos');"><div class="icon"><img src="img/icoMenuRTM.svg" alt="실시간 위치보기"/></div></li>
+			<li class="btnMenuMap" onclick="viewSelMenu('#hdStaSubwayMap');"><div class="icon"><img src="img/icoMenuMap.svg" alt="최단환승경로 &middot; 지하철노선도"/></div></li>			
+			<li class="btnMenuNotice" onclick="viewSelMenu('#hdStaNotice');"><div class="icon"><img src="img/icoMenuNotice.svg" alt="공지사항"/></div></li>
+			<li class="btnMenuReload" onclick="document.location.reload();"><div class="icon"><img src="img/icoMenuReload.svg" alt="후다닥 새로고침"/></div></li>
+			<li class="btnMenuAbout" onclick="viewSelMenu('#hdStaAbout');"><div class="icon"><img src="img/icoMenuAbout.svg" alt="후다닥 스테이션은?"/></div></li>
+		</ul>
+		</div>
+		<div id="hdStaConfig" class="menuSub">
+			<div class="menuSubTit font_nanumBarunL">환경설정<a href="" class="btnPrev" onclick="viewSelMenuBack($(this).parent().parent())" onfocus="this.onclick"></a></div>
+		</div>
+		<div id="hdStaAbout" class="menuSub">
+			<div class="menuSubTit font_nanumBarunL">후다닥 스테이션은?<a href="" class="btnPrev" onclick="viewSelMenuBack($(this).parent().parent())" onfocus="this.onclick"></a></div>
+			<ul>
+				<li class="aboutSymbol">후다닥 스테이션</li>
+				<li>
+					<p style="color:#d6d6d6" class="font_nanumBarunL">후다닥 스테이션 (수도권지하철)편</p>
+					<p style="font-size:12px" class="font_GothamL">version : 1.4.0</p>
+					<p style="font-size:10px" class="font_GothamL">Last Update : 2015.07.26</p>
+				</li>
+				<li>
+					<p style="font-size:14px;color:#d6d6d6" class="font_GothamL2">WANGKOON</p>
+					<p style="font-size:12px" class="font_GothamL"><a href="mailto:wangsub.shin@gmail.com">wangsub.shin@gmail.com</a></p>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- E : 메뉴 레이아웃 -->
+
+	<!-- S : 노선도 상단바 v1.2.0.150519 추가 -->
+	<div id="hdStaSubwayLoc">
+		<div class="locStart">
+			<span class="txt font_nanumBarunL">출발역&nbsp;&nbsp;&nbsp;</span>
+			<span class="txtStation font_nanumBarunL" onclick="removeSta(0);">미지정</span>
+		</div>
+		<div class="locEnd">
+			<span class="txt font_nanumBarunL">도착역&nbsp;&nbsp;&nbsp;</span>
+			<span class="txtStation font_nanumBarunL" onclick="removeSta(1);">미지정</span>
+		</div>
+		<div class="btnFindLoc" onclick="findLoc();"></div>
+	</div>
+	<!-- E : 노선도 상단바 v1.2.0.150519 추가 -->
+
+	<!-- S : 노선도 SVG맵 출력 v1.2.0.150519 추가 -->
+	<div id="hdStaSubwayMap">
+		<div id="hdStaSubwayMapAll">
+			<div class="hdStaMapMenu"></div>
+		</div>
+		<!-- Map Scale Button Area -->
+		<div class="btnMapScale">
+		<ul>
+			<li class="btnMapScaleDown" onclick="mapScaleUp(false);"><span class="font_GothamL2">-</span></li>
+			<li class="btnMapScaleUp"onclick="mapScaleUp(true);"><span class="font_GothamL2">+</span></li>
+		</ul>
+		</div>
+		<!-- // Map Scale Button Area -->
+	</div>
+	<!-- E : 노선도 SVG맵 출력 v1.2.0.150519 추가 -->
+
+	<!-- S : 노선도 역선택 화면 v1.2.0.150519 추가 -->
+	<div id="hdStaSubwayMapSelLine">
+		<div class="btnInfoClose" onclick="$(this).parent().fadeOut(0)" onkeypress="this.onclick"></div>
+		<!-- Station List -->
+		<div class="selLine">
+			<div class="selTit font_GothamL2">역선택</div>
+			<ul>
+				<li data-ng-repeat="station in subwayData" class="selLine{{station.stationNum}}" data-ng-click="showNgMapMenu(station.stationNum)" onkeypress="this.onclick" line-code="{{station.lineCode}}" data-station-code="{{station.stationCode}}" >
+					<div class="infoStaNum"><p class="numIco line{{station.lineCode}} font_GothamL">{{station.lineNum.replace("경의중앙선","경의중앙").replace("인천1호선","인천1")}}</p></div><div class="font_GothamL2">{{station.stationName}}</div><div class="staEngName">{{station.stationNmEng}}</div><div class="btnInfo" data-ng-click="showStationData(station.idx)"></div></li>
+			</ul>
+		</div>
+		<!-- // Station List -->
+
+		<!-- Station Select Menu -->
+		<div class="selStation">
+			<div class="infoCon">
+				<div class="infoStaNum"></div>
+				<div class="infoStaName font_nanumBarunL"></div>
+				<div class="infoStaNameEng font_GothamL"></div>
+				<div class="infoStaAction">
+					<div class="btnSelStart">
+						<p class="icoSel"></p>
+						<p class="txtSel font_nanumBarunL">출발역 지정</p>
+					</div>
+					<div class="btnSelEnd">
+						<p class="icoSel"></p>
+						<p class="txtSel font_nanumBarunL">도착역 지정</p>
+					</div>
+					<div class="btnSelFav" onclick="resetStation()">
+						<p class="icoSel"></p>
+						<p class="txtSel font_nanumBarunL">역설정 초기화</p>
+					</div>
+					<div class="btnSelInfo">
+						<p class="icoSel"></p>
+						<p class="txtSel font_nanumBarunL">역정보</p>
+					</div>					
+				</div>
+			</div>
+		</div>
+		<!-- // Station Select Menu -->
+	</div>
+	<!-- E : 노선도 역선택 화면 v1.2.0.150519 추가 -->
+
+	<!-- S : 노선도 최단경로 결과 화면 v1.2.0.150519 추가 -->
+	<div id="hdStaSubwayShowLoc">
+		<div class="btnInfoClose" onclick="$(this).parent().fadeOut(0)" onkeypress="this.onclick"></div>
+		<div class="locTit font_GothamL2">최단경로검색</div>
+		<div class="showLoc">
+			<div class="showLocInfo">
+				<div class="showLocMap"><ul></ul></div>
+				<div class="showLocTime"><!-- 소요시간 : 약 82 분 --></div>
+				<div class="showLocPrice"></div>
+				<div class="showCaution">※ 일반열차 운행 기준 ※ 신분당선 이용시 700원의 추가요금 발생</div>
+			</div>
+			<div class="infoStaOrigin font_nanumBarunL">정보제공 : 서울도시철도공사</div>
+		</div>
+		<div class="showLocDummy"></div>
+	</div>
+	<!-- E : 노선도 최단경로 결과 화면 v1.2.0.150519 추가 -->
+	
+	<!-- S : 하단 레이어 상태 메시지 -->
+	<div id="commLayer" class="font_nanumBarunL">한번 더 누르면 앱을 종료합니다.</div>
+	<!-- E : 하단 레이어 상태 메시지 -->
+</body>
+</html>

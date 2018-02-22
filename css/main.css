@@ -1,0 +1,471 @@
+@import url("http://fonts.googleapis.com/earlyaccess/nanumgothic.css");
+@import url("GothamPro.css");
+@import url("nanumbarungothic.css");
+/* @import url(https://cdn.rawgit.com/openhiun/hangul/14c0f6faa2941116bb53001d6a7dcd5e82300c3f/nanumbarungothic.css); */body{background:#f5f5f5}
+
+/* 페이지내 사용 폰트 */
+.font_nanumBarunL{font-family:'Nanum Barun Gothic';font-weight:200;letter-spacing:-1px}
+.font_GothamL{font-family:'GothamPro-Light','Nanum Gothic',serif;font-weight:400;letter-spacing:-1px}
+.font_GothamL2{font-family:'GothamPro-Light','Nanum Barun Gothic',serif;font-weight:400;letter-spacing:-1px}
+
+/* 공지사항 화면 */
+#notice{display:none;position:fixed;top:0;left:0;z-index:8000;width:100%;height:100%;background:rgba(0,0,0,.7)}
+#notice .board{overflow:hidden;position:absolute;top:10%;left:50%;width:90%;height:80%;margin-left:-45%;background:rgba(255,255,255,.9)}
+#notice .board .boardTit{height:50px;background:#000;line-height:52px;font-size:18px;font-weight:bold;color:#fff;text-align:center}
+#notice .board .boardCon{overflow:auto;overflow-x:hidden;height:100%;padding:20px;padding-bottom:50px;font-size:15px;line-height:22px}
+#notice .board .boardCon p{font-weight:bold;font-size:10px}
+#notice .board .btnCloseForever{position:absolute;left:0;bottom:0;width:50%;height:50px;background:#364556;line-height:52px;font-size:13px;color:#fff;text-align:center}
+#notice .board .btnClose{position:absolute;right:0;bottom:0;width:50%;height:50px;background:#ff525c;line-height:52px;font-size:13px;color:#fff;text-align:center}
+#notice .board .btnClose:active{background:#212121}
+
+/* 로딩 화면 관련 */
+.loaders{position:fixed;top:45px;z-index:7990;width:100%;height:100%;background-color:rgba(0,0,0,.4);line-height:100%}
+.loader-quart{position:absolute;top:40%;left:50%;margin:-25px 0 0 -25px;border-radius:50px;border:6px solid rgba(255,255,255,0.2)}
+.loader{display:inline-block;position:relative;width:50px;height:50px;vertical-align:middle}
+.loader-quart:after{position:absolute;top:-6px;right:-6px;left:-6px;bottom:-6px;border-radius:50px;border:6px solid transparent;border-top-color:#fff;content:'';-webkit-animation:spin 1s linear infinite;animation:spin 1s linear infinite}
+.loader-text{position:absolute;top:40%;left:0;width:100%;margin-top:50px;font-size:13px;color:#ccc;letter-spacing:-1px;text-align:center}
+
+@-webkit-keyframes spin{0%{-webkit-transform:rotate(0deg);tranform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);tranform:rotate(360deg)}}
+
+/*상단 메뉴 영역*/
+#hdStaHeader{overflow:hidden;position:fixed;top:0;left:0;z-index:500;width:100%;height:45px;background:#364556;line-height:45px}
+#hdStaHeader .headerLoc{float:left;width:80%;height:45px;line-height:45px;color:#e0e0e0;text-align:center}
+#hdStaHeader .btnConfig{float:right;width:20%;height:45px;background:#ff294c;line-height:45px;font-size:20px;color:#fff;text-align:center}
+#hdStaHeader .btnConfig:active{background:#212121}
+#hdStaHeader .btnConfig p.ico_menu{width:25px;height:25px;margin:9.5px auto;background:url(../img/ico_menu_new.svg) no-repeat 50% 50%;background-size:contain}
+
+/*역명 키워드 입력 영역*/
+#hdStaInp{position:fixed;top:45px;left:0;z-index:500;width:100%;height:50px;background:#f5f5f5}
+#hdStaInp .input_inner{padding:12px 12px 0}
+#hdStaInp .input_inner input{display:block;width:100%;height:36px;border:0;border-bottom:2px solid #364556;background:#f5f5f5;line-height:36px;font-size:18px;outline-style:none}
+#hdStaSubway{z-index:10;padding-top:95px}
+
+/*역 리스트 영역*/
+.subwayList > li{overflow:hidden;height:59px}
+.subwayList > li.on{overflow:visible;height:auto}
+.subwayList > li.on .showDistance{display:none}
+.subwayList > li:nth-child(odd){background:#f5f5f5}
+.subwayList > li:nth-child(even){background:#f1f1f1}
+.subwayList > li > div{overflow:hidden;position:relative;height:35px;padding:12px}
+.subwayList > li .lineNum{float:left;width:40px;height:40px;line-height:43px;font-size:10px;color:#fff;text-align:center;-webkit-border-radius:50% 50%}
+.subwayList > li .staName{float:left;min-width:180px;height:40px;margin-left:12px}
+.subwayList > li .staName .staNameKor{height:25px;font-size:20px;line-height:31px}
+.subwayList > li .staName .staNameEng{height:13px;font-size:8px;line-height:15px;color:#767676;letter-spacing:0 !important}
+.subwayList > li .btnInfo{position:absolute;top:15px;right:65px;width:25px;height:25px;border:2px solid #cacaca;background:url(../img/btnInfo.png) no-repeat 0 0;background-size:100% 100%;-webkit-border-radius:50% 50%}
+.subwayList > li .btnInfo:active{background-color:#dcdcdc}
+.subwayList > li .showDistance{position:absolute;top:15px;right:12px;width:40px;height:25px;border:2px solid #cacaca;line-height:26px;font-size:10px;color:#8e8e8e;text-align:center;-webkit-border-radius:25px}
+.subwayList > li .btnRefresh{display:none;position:absolute;top:15px;right:12px;width:40px;height:25px;border:2px solid #cacaca;background:#cacaca;line-height:26px;text-align:center;-webkit-border-radius:25px}
+.subwayList > li .btnRefresh .btnRefreshArea{width:25px;height:25px;margin:0 auto;background:url(../img/btnRefresh.png) no-repeat 0 0;background-size:100% 100%}
+.subwayList > li .btnRefresh .btnRefreshArea.on{-webkit-animation:refreshMv .6s;-webkit-animation-delay:0;-webkit-animation-iteration-count:infinite}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes refreshMv{100%{-webkit-transform:rotate(360deg)}}
+.subwayList > li.on .btnRefresh{display:block}
+.subwayList > li .subwayArriveView{display:none;overflow:hidden;height:auto;padding-top:0 !important}
+.subwayList > li.on .subwayArriveView{display:block}
+.subwayList > li .subwayArriveView ul li{position:relative;height:95px;margin-top:5px;border:1px solid #ebebeb;background:#fff;line-height:97px;font-size:12px;text-align:center;-webkit-border-radius:5px 5px}
+.subwayList > li .subwayArriveView ul li:first-child{margin:0}
+.subwayList > li .subwayArriveView ul li .saLine{position:absolute;top:65px;left:0;width:100%;height:0;border-top:1.5px solid}
+.subwayList > li .subwayArriveView ul li .saPoint{position:absolute;top:65px;width:6px;height:6px;margin-top:-2px;margin-left:-3px;-webkit-border-radius:50% 50%}
+.subwayList > li .subwayArriveView ul li.reverse .saPoint{margin-left:0;margin-right:-3px}
+.subwayList > li .subwayArriveView ul li .saPoint.saPointPrev{left:15%}
+.subwayList > li .subwayArriveView ul li.reverse .saPoint.saPointPrev{right:15%;left:auto}
+.subwayList > li .subwayArriveView ul li .saPoint.saPointHere{left:50%}
+.subwayList > li .subwayArriveView ul li.reverse .saPoint.saPointHere{right:50%;left:auto}
+.subwayList > li .subwayArriveView ul li .saPointNext{position:absolute;right:15px;top:65px;margin-top:-10px;;width:20px;height:20px;-webkit-mask:url(../img/btnPrev.svg) no-repeat 0 0;-webkit-mask-size:100% 100%}
+.subwayList > li .subwayArriveView ul li.reverse .saPointNext{left:15px;right:auto;transform:scaleX(-1);-webkit-transform:scaleX(-1)}
+.subwayList > li .subwayArriveView ul li .saIconExpress{display:none;position:absolute;top:10px;right:15px;width:30px;height:20px; line-height:22px;font-size:12px;color:#fff;text-align:center;-webkit-border-radius:4px 4px;background:#b5363d}
+.subwayList > li .subwayArriveView ul li.reverse .saIconExpress{left:15px;right:auto}
+.subwayList > li .subwayArriveView ul li .saIconItx{display:none;position:absolute;top:15px;right:15px;width:25px;height:25px;border:1px solid #40a164;background:url(../img/ico_itx.gif) no-repeat 50% 50%;background-size:100% 100%;line-height:26px;font-size:10px;color:#40a164;text-align:center;-webkit-border-radius:50% 50%}
+.subwayList > li .subwayArriveView ul li .saTrain{position:absolute;top:12px;width:70px;margin-left:-35px}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain{margin-left:0;margin-right:-35px}
+.subwayList > li .subwayArriveView ul li .saTrain .tit{;font-size:7px;text-align:center;color:#333}
+.subwayList > li .subwayArriveView ul li .saTrain .status{margin-bottom:-3px;font-size:9px;font-weight:bold;text-align:center;display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;-o-text-overflow:ellipsis}
+.subwayList > li .subwayArriveView ul li .saTrain .img{width:50px;height:35px;margin:0 auto;background:#364556;-webkit-mask:url(../img/ico_newTrain.svg) no-repeat 0 0;-webkit-mask-size:100% 100%}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain .img{transform:scaleX(-1);-webkit-transform:scaleX(-1)}
+.subwayList > li .subwayArriveView ul li .saTrain .trainNo{position:absolute;top:30px;left:0;width:70px;text-align:center;font-size:5px;z-index:100;color:#bbb}
+
+/* 1정거장 더 이전 */
+.subwayList > li .subwayArriveView ul li .saTrain.arriveType1{left:40px}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain.arriveType1{right:40px;left:auto}
+.subwayList > li .subwayArriveView ul li .saTrain.arriveType1ex{display:none}
+/* 전 역 도착 */
+.subwayList > li .subwayArriveView ul li .saTrain.arriveType2{left:15%}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain.arriveType2{right:15%;left:auto}
+/* 전역 출발 도착 */
+.subwayList > li .subwayArriveView ul li .saTrain.arriveType3{left:26%}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain.arriveType3{right:26%;left:auto}
+/* 승강장 진입중 */
+.subwayList > li .subwayArriveView ul li .saTrain.arriveType4{left:38%}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain.arriveType4{right:38%;left:auto}
+/* 승강장 대기중 */
+.subwayList > li .subwayArriveView ul li .saTrain.arriveType5{left:50%}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain.arriveType5{right:50%;left:auto}
+/* 승강장 출발 */
+.subwayList > li .subwayArriveView ul li .saTrain.arriveType6{left:60%}
+.subwayList > li .subwayArriveView ul li.reverse .saTrain.arriveType6{right:60%;left:auto}
+
+.subwayList > li .subwayArriveView ul li .saTitle{position:absolute;top:71px;height:20px;font-size:10px;line-height:20px;color:#364556;text-align:center}
+.subwayList > li .subwayArriveView ul li .saTitle.saTitlePrev{left:15%;width:80px;margin-left:-40px;font-size:10px;color:#8f8f8f}
+.subwayList > li .subwayArriveView ul li.reverse .saTitle.saTitlePrev{left:auto;right:15%;margin-left:0;margin-right:-40px}
+.subwayList > li .subwayArriveView ul li .saTitle.saTitleHere{left:50%;width:100px;margin-left:-50px;font-size:12px}
+.subwayList > li .subwayArriveView ul li .saTitleNext{position:absolute;top:71px;height:20px;font-size:8px;line-height:20px;float:right;right:35px;line-height:16px;text-align:right;font-weight:bold;letter-spacing:-.5px}
+.subwayList > li .subwayArriveView ul li.reverse .saTitleNext{float:left;left:35px;right:auto;text-align:left}
+.subwayList > li .subwayArriveView ul li.ttData{height:auto !important;padding:10px 0;line-height:100%;text-align:center}
+.subwayList > li .subwayArriveView ul li.ttData .ttData_arr{display:inline-block;width:49.5%;margin:0 auto}
+.subwayList > li .subwayArriveView ul li.ttData .ttData_arr:nth-child(2){border-left:1px solid #ebebeb}
+.arrText{font-size:12px}
+.arrTimeText{padding:3px 0 0;font-size:15px;color:#364556}
+.desText{font-size:10px;color:#364556}
+
+/*노선별 컬러값 설정*/
+
+/* 1호선 */
+.line1001 .saTrain .status,.line1001 .saTrain .pointTit,.line1001 .saTitleNext,.line1001 .arrText{color:#0d3692}
+/* 2호선 */
+.line1002 .saTrain .status,.line1002 .saTrain .pointTit,.line1002 .saTitleNext,.line1002 .arrText{color:#33a23d}
+/* 3호선 */
+.line1003 .saTrain .status,.line1003 .saTrain .pointTit,.line1003 .saTitleNext,.line1003 .arrText{color:#fe5b10}
+/* 4호선 */
+.line1004 .saTrain .status,.line1004 .saTrain .pointTit,.line1004 .saTitleNext,.line1004 .arrText{color:#32a1c8}
+/* 5호선 */
+.line1005 .saTrain .status,.line1005 .saTrain .pointTit,.line1005 .saTitleNext,.line1005 .arrText{color:#8b50a4}
+/* 6호선 */
+.line1006 .saTrain .status,.line1006 .saTrain .pointTit,.line1006 .saTitleNext,.line1006 .arrText{color:#c55c1d}
+/* 7호선 */
+.line1007 .saTrain .status,.line1007 .saTrain .pointTit,.line1007 .saTitleNext,.line1007 .arrText{color:#54640d}
+/* 8호선 */
+.line1008 .saTrain .status,.line1008 .saTrain .pointTit,.line1008 .saTitleNext,.line1008 .arrText{color:#f51361}
+/* 9호선 */
+.line1009 .saTrain .status,.line1009 .saTrain .pointTit,.line1009 .saTitleNext,.line1009 .arrText{color:#aa9872}
+/* 분당선 */
+.line1075 .saTrain .status,.line1075 .saTrain .pointTit,.line1075 .saTitleNext,.line1075 .arrText{color:#ffb300}
+/* 경의중앙선 */
+.line1063 .saTrain .status,.line1063 .saTrain .pointTit,.line1063 .saTitleNext,.line1063 .arrText{color:#009b76}
+/* 신분당선 */
+.line1077 .saTrain .status,.line1077 .saTrain .pointTit,.line1077 .saTitleNext,.line1077 .arrText{color:#c82127}
+/* 인천1호선 */
+.line1069 .saTrain .status,.line1069 .saTrain .pointTit,.line1069 .saTitleNext,.line1069 .arrText{color:#8cadcb}
+/* 공항철도 */
+.line1065 .saTrain .status,.line1065 .saTrain .pointTit,.line1065 .saTitleNext,.line1065 .arrText{color:#3681b7}
+/* 경춘선 */
+.line1067 .saTrain .status,.line1067 .saTrain .pointTit,.line1067 .saTitleNext,.line1067 .arrText{color:#007458}
+/* 수인선 */
+.line1071 .saTrain .status,.line1071 .saTrain .pointTit,.line1071 .saTitleNext,.line1071 .arrText{color:#ffb300}
+/* 의정부 경전철 */
+.line0116 .saTrain .status,.line0116 .saTrain .pointTit,.line0116 .saTitleNext,.line0116 .arrText{color:#fda600}
+/* 에버라인 */
+.line0119 .saTrain .status,.line0119 .saTrain .pointTit,.line0119 .saTitleNext,.line0119 .arrText{color:#5eae53}
+
+
+
+
+/* 1호선 */
+.line1001 .lineNum,.line1001 .saPointNext,.line1001 .saPoint,.infoStaNum .line1001,.showLocMap ul li .lineNum.r1,
+.transferLine .btnEnterLine.line1001,.line1001 .trainArr .icoTrain,.line1001 .ico_line,.swPosExtMenu .line1001.on{background:#0d3692}
+/* 2호선 */
+.line1002 .lineNum,.line1002 .saPointNext,.line1002 .saPoint,.infoStaNum .line1002,.showLocMap ul li .lineNum.r2,
+.transferLine .btnEnterLine.line1002,.line1002 .trainArr .icoTrain,.line1002 .ico_line,.swPosExtMenu .line1002.on{background:#33a23d}
+/* 3호선 */
+.line1003 .lineNum,.line1003 .saPointNext,.line1003 .saPoint,.infoStaNum .line1003,.showLocMap ul li .lineNum.r3,
+.transferLine .btnEnterLine.line1003,.line1003 .trainArr .icoTrain,.line1003 .ico_line,.swPosExtMenu .line1003.on{background:#fe5b10}
+/* 4호선 */
+.line1004 .lineNum,.line1004 .saPointNext,.line1004 .saPoint,.infoStaNum .line1004,.showLocMap ul li .lineNum.r4,
+.transferLine .btnEnterLine.line1004,.line1004 .trainArr .icoTrain,.line1004 .ico_line,.swPosExtMenu .line1004.on{background:#32a1c8}
+/* 5호선 */
+.line1005 .lineNum,.line1005 .saPointNext,.line1005 .saPoint,.infoStaNum .line1005,.showLocMap ul li .lineNum.r5,
+.transferLine .btnEnterLine.line1005,.line1005 .trainArr .icoTrain,.line1005 .ico_line,.swPosExtMenu .line1005.on{background:#8b50a4}
+/* 6호선 */
+.line1006 .lineNum,.line1006 .saPointNext,.line1006 .saPoint,.infoStaNum .line1006,.showLocMap ul li .lineNum.r6,
+.transferLine .btnEnterLine.line1006,.line1006 .trainArr .icoTrain,.line1006 .ico_line,.swPosExtMenu .line1006.on{background:#c55c1d}
+/* 7호선 */
+.line1007 .lineNum,.line1007 .saPointNext,.line1007 .saPoint,.infoStaNum .line1007,.showLocMap ul li .lineNum.r7,
+.transferLine .btnEnterLine.line1007,.line1007 .trainArr .icoTrain,.line1007 .ico_line,.swPosExtMenu .line1007.on{background:#54640d}
+/* 8호선 */
+.line1008 .lineNum,.line1008 .saPointNext,.line1008 .saPoint,.infoStaNum .line1008,.showLocMap ul li .lineNum.r8,
+.transferLine .btnEnterLine.line1008,.line1008 .trainArr .icoTrain,.line1008 .ico_line,.swPosExtMenu .line1008.on{background:#f51361}
+/* 9호선 */
+.line1009 .lineNum,.line1009 .saPointNext,.line1009 .saPoint,.infoStaNum .line1009,.showLocMap ul li .lineNum.r9,
+.transferLine .btnEnterLine.line1009,.line1009 .trainArr .icoTrain,.line1009 .ico_line,.swPosExtMenu .line1009.on{background:#aa9872}
+/* 분당선 */
+.line1075 .lineNum,.line1075 .saPointNext,.line1075 .saPoint,.infoStaNum .line1075,.showLocMap ul li .lineNum.r31,
+.transferLine .btnEnterLine.line1075,.line1075 .trainArr .icoTrain,.line1075 .ico_line,.swPosExtMenu .line1075.on{background:#ffb300}
+/* 경의중앙선 */
+.line1063 .lineNum,.line1063 .saPointNext,.line1063 .saPoint,.infoStaNum .line1063,.showLocMap ul li .lineNum.r32,
+.transferLine .btnEnterLine.line1063,.line1063 .trainArr .icoTrain,.line1063 .ico_line,.swPosExtMenu .line1063.on{background:#009b76}
+/* 신분당선 */
+.line1077 .lineNum,.line1077 .saPointNext,.line1077 .saPoint,.infoStaNum .line1077,.showLocMap ul li .lineNum.r33,
+.transferLine .btnEnterLine.line1077,.line1077 .trainArr .icoTrain,.line1077 .ico_line,.swPosExtMenu .line1077.on{background:#c82127}
+/* 인천1호선 */
+.line1069 .lineNum,.line1069 .saPointNext,.line1069 .saPoint,.infoStaNum .line1069,.showLocMap ul li .lineNum.r21,
+.transferLine .btnEnterLine.line1069,.line1069 .trainArr .icoTrain,.line1069 .ico_line,.swPosExtMenu .line1069.on{background:#8cadcb}
+/* 공항철도 */
+.line1065 .lineNum,.line1065 .saPointNext,.line1065 .saPoint,.infoStaNum .line1065,.showLocMap ul li .lineNum.r34,
+.transferLine .btnEnterLine.line1065,.line1065 .trainArr .icoTrain,.line1065 .ico_line,.swPosExtMenu .line1065.on{background:#3681b7}
+/* 경춘선 */
+.line1067 .lineNum,.line1067 .saPointNext,.line1067 .saPoint,.infoStaNum .line1067,.showLocMap ul li .lineNum.r36,
+.transferLine .btnEnterLine.line1067,.line1067 .trainArr .icoTrain,.line1067 .ico_line,.swPosExtMenu .line1067.on{background:#007458}
+/* 수인선 */
+.line1071 .lineNum,.line1071 .saPointNext,.line1071 .saPoint,.infoStaNum .line1071,.showLocMap ul li .lineNum.r37,
+.transferLine .btnEnterLine.line1071,.line1071 .trainArr .icoTrain,.line1071 .ico_line,.swPosExtMenu .line1071.on{background:#ffb300}
+/* 의정부 경전철 */
+.line0116 .lineNum,.line0116 .saPointNext,.line0116 .saPoint,.infoStaNum .line0116,.showLocMap ul li .lineNum.r51,
+.transferLine .btnEnterLine.line0116,.line0116 .trainArr .icoTrain,.line0116 .ico_line,.swPosExtMenu .line0116.on{background:#fda600}
+/* 에버라인 */
+.line0119 .lineNum,.line0119 .saPointNext,.line0119 .saPoint,.infoStaNum .line0119,.showLocMap ul li .lineNum.r52,
+.transferLine .btnEnterLine.line0119,.line0119 .trainArr .icoTrain,.line0119 .ico_line,.swPosExtMenu .line0119.on{background:#5eae53}
+
+/* 1호선 */
+.line1001 .saLine,.showLocMap ul li .line.l1,.line1001 .trainArr .lineArr{border-color:#0d3692 !important}
+/* 2호선 */
+.line1002 .saLine,.showLocMap ul li .line.l2,.line1002 .trainArr .lineArr{border-color:#33a23d !important}
+/* 3호선 */
+.line1003 .saLine,.showLocMap ul li .line.l3,.line1003 .trainArr .lineArr{border-color:#fe5b10 !important}
+/* 4호선 */
+.line1004 .saLine,.showLocMap ul li .line.l4,.line1004 .trainArr .lineArr{border-color:#32a1c8 !important}
+/* 5호선 */
+.line1005 .saLine,.showLocMap ul li .line.l5,.line1005 .trainArr .lineArr{border-color:#8b50a4 !important}
+/* 6호선 */
+.line1006 .saLine,.showLocMap ul li .line.l6,.line1006 .trainArr .lineArr{border-color:#c55c1d !important}
+/* 7호선 */
+.line1007 .saLine,.showLocMap ul li .line.l7,.line1007 .trainArr .lineArr{border-color:#54640d !important}
+/* 8호선 */
+.line1008 .saLine,.showLocMap ul li .line.l8,.line1008 .trainArr .lineArr{border-color:#f51361 !important}
+/* 9호선 */
+.line1009 .saLine,.showLocMap ul li .line.l9,.line1009 .trainArr .lineArr{border-color:#aa9872 !important}
+/* 분당선 */
+.line1075 .saLine,.showLocMap ul li .line.l31,.line1075 .trainArr .lineArr{border-color:#ffb300 !important}
+/* 경의중앙선 */
+.line1063 .saLine,.showLocMap ul li .line.l32,.line1063 .trainArr .lineArr{border-color:#009b76 !important}
+/* 신분당선 */
+.line1077 .saLine,.showLocMap ul li .line.l33,.line1077 .trainArr .lineArr{border-color:#c82127 !important}
+/* 인천1호선 */
+.line1069 .saLine,.showLocMap ul li .line.l21,.line1069 .trainArr .lineArr{border-color:#8cadcb !important}
+/* 공항철도 */
+.line1065 .saLine,.showLocMap ul li .line.l34,.line1065 .trainArr .lineArr{border-color:#3681b7 !important}
+/* 경춘선 */
+.line1067 .saLine,.showLocMap ul li .line.l36,.line1067 .trainArr .lineArr{border-color:#007458 !important}
+/* 수인선 */
+.line1071 .saLine,.showLocMap ul li .line.l37,.line1071 .trainArr .lineArr{border-color:#ffb300 !important}
+/* 의정부 경전철 */
+.line0116 .saLine,.showLocMap ul li .line.l51,.line0116 .trainArr .lineArr{border-color:#fda600 !important}
+/* 에버라인 */
+.line0119 .saLine,.showLocMap ul li .line.l52,.line0119 .trainArr .lineArr{border-color:#5eae53 !important}
+
+/*급행 관련 v1.2.1.150524 추가*/
+.express .saLine{border-color:#b5363d !important}
+.express .saPoint,.express .saPointNext{background:#b5363d !important}
+.express .saTitleNext,.express .status{color:#b5363d !important}
+
+/* 지하철 역정보 화면 */
+#hdStaSubwayInfo{display:none;position:fixed;top:0;left:0;z-index:5000;width:100%;height:100%}
+#hdStaSubwayInfo .btnInfoClose{width:100%;height:100%;background:rgba(0,0,0,.8)}
+#hdStaSubwayInfo .btnClose{position:absolute;top:50%;right:5%;width:35px;height:35px;background:url(../img/btnClose.svg) no-repeat 50% 50%;background-size:100% 100%}
+#hdStaSubwayInfo .infoCon{overflow:auto;overflow-x:hidden;position:absolute;top:50%;left:50%;width:90%;max-height:80%;margin-left:-45%;padding:15px 0 0;background:#fff;text-align:center}
+#hdStaSubwayInfo .infoCon .infoStaNum{padding:0 0 5px}
+.numIco{width:35px;height:35px;margin:0 auto;line-height:36px;font-size:15px;color:#fff;text-align:center;-webkit-border-radius:50% 50%}
+#hdStaSubwayInfo .infoCon .infoStaName{height:30px;margin:5px 0;font-size:30px;line-height:30px;color:#333}
+#hdStaSubwayInfo .infoCon .infoStaNameEng{height:12px;font-size:12px;line-height:12px;color:#333}
+#hdStaSubwayInfo .infoCon .infoStaInfo{margin:15px 0 0;padding:15px 0;background:#f2f2f2;text-align:center}
+#hdStaSubwayInfo .infoCon .infoStaInfo > .info{display:inline-block;position:relative;width:70px;height:70px;margin-left:1%;background:#fff;-webkit-border-radius:50% 50%}
+#hdStaSubwayInfo .infoCon .infoStaInfo > .info:first-child{margin:0}
+#hdStaSubwayInfo .infoCon .infoStaInfo > .info .info_txt{position:absolute;top:48px;left:0;width:70px;height:15px;font-size:9px;line-height:15px;text-align:center}
+#hdStaSubwayInfo .infoCon .infoMenu{width:100%;overflow:hidden}
+#hdStaSubwayInfo .infoCon .infoMenu li{width:50%;float:left;border-top:2px solid #f2f2f2;background:#7e8994;height:30px;text-align:center;color:#e5e5e5;line-height:31px;font-size:12px;letter-spacing:-1px}
+#hdStaSubwayInfo .infoCon .infoMenu li.on{background:#9eaab6;font-weight:bold;color:#fff;border-color:#9eaab6}
+#hdStaSubwayInfo .infoCon .infoStaCon{display:none}
+#hdStaSubwayInfo .infoCon .trainTimetable table{width:100%}
+#hdStaSubwayInfo .infoCon .trainTimetable table thead tr{height:23px;background:#9eaab6}
+#hdStaSubwayInfo .infoCon .trainTimetable table thead tr th{height:23px;font-family:'Nanum Barun Gothic';font-weight:200;font-size:11px;line-height:25px;color:#fff;letter-spacing:-1px;text-align:center}
+#hdStaSubwayInfo .infoCon .trainTimetable table.list_4 thead tr th{width:20%}
+#hdStaSubwayInfo .infoCon .trainTimetable table.list_4 thead tr th:nth-child(1){width:40%}
+#hdStaSubwayInfo .infoCon .trainTimetable table.list_4 tbody tr th{width:40%}
+#hdStaSubwayInfo .infoCon .trainTimetable table.list_4 tbody tr td{width:20%}
+#hdStaSubwayInfo .infoCon .trainTimetable table.list_3 thead tr th{width:50%}
+#hdStaSubwayInfo .infoCon .trainTimetable table thead tr th:nth-child(1){font-family:'Nanum Gothic';font-weight:200;font-size:13px;font-weight:700}
+#hdStaSubwayInfo .infoCon .trainTimetable table tbody tr{height:22px}
+#hdStaSubwayInfo .infoCon .trainTimetable table tbody tr:nth-child(odd){background:#f5f5f5}
+#hdStaSubwayInfo .infoCon .trainTimetable table tbody tr:nth-child(even){background:#f1f1f1}
+#hdStaSubwayInfo .infoCon .trainTimetable table tbody tr td,#hdStaSubwayInfo .infoCon .trainTimetable table tbody tr th{width:25%;height:22px;font-family:'GothamPro-Light';font-weight:200;font-size:11px;line-height:23px;color:#333;letter-spacing:-1px;text-align:center}
+#hdStaSubwayInfo .infoCon .trainTimetable table tbody tr th:nth-child(1){font-family:'Nanum Barun Gothic'}
+.infoStaOrigin{height:30px;line-height:30px;font-size:10px;text-align:left;text-indent:12px}
+
+/*출구 정보 영역 추가 v1.2.1.150524*/
+#hdStaSubwayInfo .infoCon .trainGatetable table{width:100%}
+#hdStaSubwayInfo .infoCon .trainGatetable table thead tr{background:#9eaab6}
+#hdStaSubwayInfo .infoCon .trainGatetable table thead tr th{font-family:'Nanum Barun Gothic';font-weight:200;font-size:12px;line-height:25px;color:#fff;letter-spacing:-1px;text-align:center}
+#hdStaSubwayInfo .infoCon .trainGatetable table thead tr th{width:80%}
+#hdStaSubwayInfo .infoCon .trainGatetable table thead tr th:first-child{width:20%}
+#hdStaSubwayInfo .infoCon .trainGatetable table tbody tr td{width:80%}
+#hdStaSubwayInfo .infoCon .trainGatetable table tbody tr td{width:20%}
+#hdStaSubwayInfo .infoCon .trainGatetable table tbody tr:nth-child(odd){background:#f5f5f5}
+#hdStaSubwayInfo .infoCon .trainGatetable table tbody tr:nth-child(even){background:#f1f1f1}
+#hdStaSubwayInfo .infoCon .trainGatetable table tbody tr td{position:relative;padding:10px 0}
+#hdStaSubwayInfo .infoCon .trainGatetable table tbody tr td div{width:90%;margin:0 auto;color:#333;font-family:'Nanum Barun Gothic';font-weight:200;font-size:12px;letter-spacing:-1px}
+#hdStaSubwayInfo .infoCon .trainGatetable table tbody tr th{font-family:'GothamPro-Light';font-size:14px;font-weight:200}
+
+/* 페이지 메인메뉴 */
+#hdStaMenu{display:none;position:fixed;top:0;left:0;z-index:5000;width:100%;height:100%}
+#hdStaMenu .btnMenuClose{width:100%;height:100%;background:rgba(0,0,0,.8)}
+#hdStaMenu .menuCon{overflow:auto;overflow-x:hidden;position:absolute;top:50%;left:50%;width:90%;margin-left:-45%;margin-top:-192px;text-align:center}
+#hdStaMenu .menuCon ul{overflow:hidden;width:100%;max-width:322px;margin:0 auto;position:relative}
+#hdStaMenu .menuCon li{float:left;background:#212121}
+#hdStaMenu .menuCon li.on{background:#eb1437}
+#hdStaMenu .menuCon li img{width:100%;opacity:0}
+#hdStaMenu .menuCon li .icon{background:#d5d5d5}
+#hdStaMenu .menuCon li.btnMenuRTM .icon{-webkit-mask:url(../img/icoMenuRTM.svg) no-repeat;-webkit-mask-size:100% 100%;width:159px;height:159px}
+#hdStaMenu .menuCon li.btnMenuRPM{margin-left:2px}
+#hdStaMenu .menuCon li.btnMenuRPM .icon{-webkit-mask:url(../img/icoMenuRPM.svg) no-repeat;-webkit-mask-size:100% 100%;width:159px;height:159px}
+#hdStaMenu .menuCon li.btnMenuMap{margin-top:2px;margin-bottom:2px}
+#hdStaMenu .menuCon li.btnMenuMap .icon{-webkit-mask:url(../img/icoMenuMap.svg) no-repeat;-webkit-mask-size:100% 100%;width:320px}
+#hdStaMenu .menuCon li.btnMenuReload,
+#hdStaMenu .menuCon li.btnMenuAbout{margin-left:2px}
+#hdStaMenu .menuCon li.btnMenuNotice .icon{-webkit-mask:url(../img/icoMenuNotice.svg) no-repeat;-webkit-mask-size:100% 100%;width:105px}
+#hdStaMenu .menuCon li.btnMenuReload .icon{-webkit-mask:url(../img/icoMenuReload.svg) no-repeat;-webkit-mask-size:100% 100%;width:105px}
+#hdStaMenu .menuCon li.btnMenuAbout .icon{-webkit-mask:url(../img/icoMenuAbout.svg) no-repeat;-webkit-mask-size:100% 100%;width:106px}
+
+/*#hdStaMenu .menuCon li:hover{background:#000}*/
+#hdStaMenu .menuCon li.off{color:#888}
+.menuSub{position:absolute;top:50%;left:50%;width:90%;margin-left:55%;background:#212121;color:#e3e3e3}
+.menuSub .menuSubTit{position:relative;height:50px;border-bottom:1px solid rgba(255,255,255,.2);line-height:51px;font-size:16px;color:#e3e3e3;text-align:center}
+.menuSub .menuSubTit a.btnPrev{position:absolute;top:13px;left:13px;width:24px;height:24px;background:url(../img/btnPrev.svg) no-repeat 0 0;background-size:100% 100%;-webkit-transform:rotateY(180deg);opacity:.5}
+.menuSub ul li{border-top:1px solid rgba(255,255,255,.05)}
+.menuSub ul li:first-child{border:0}
+#hdStaMenu .menuCon li .ico_wrap{display:inline-block;height:50px;margin-left:3px;line-height:26px}
+#hdStaMenu .menuCon li .ico_beta{display:inline-block;height:20px;padding:0 5px;background:#ff294c;font-size:9px;color:#fff;-webkit-border-radius:10px 10px}
+#hdStaConfig{height:300px;margin-top:-150px}
+#hdStaAbout{margin-top:-150px}
+#hdStaAbout ul li{padding:15px 0;color:#a5a5a5;text-align:center}
+#hdStaAbout ul li.aboutSymbol{height:80px;padding:20px 0;background:url(../img/appSymbol.png) no-repeat 50% 50%;background-size:224px 80px;text-indent:-9999em}
+#hdStaAbout ul li p,#hdStaAbout ul li a{color:#a5a5a5}
+
+/* 얼럿창 스타일 */
+#commLayer{display:none;position:fixed;left:50%;bottom:5%;z-index:9000;width:94%;height:35px;margin-left:-47%;background:rgba(0,0,0,.8);line-height:36px;font-size:15px;color:#fff;text-align:center;-webkit-border-radius:18px 18px}
+
+/* 노선도 페이지 내 출발/도착역 상단바 영역 */
+#hdStaSubwayLoc{display:none;position:fixed;top:45px;left:0;z-index:100;width:100%;height:40px;background:#363636}
+#hdStaSubwayLoc > div{overflow:hidden;float:left;position:relative;width:37%;height:40px;padding-left:7%;line-height:40px;text-align:left}
+#hdStaSubwayLoc > div span{line-height:40px;color:#fff}
+#hdStaSubwayLoc > div .txt{width:15%;font-size:10px;color:#a2a2a1}
+#hdStaSubwayLoc > div .txtStation{overflow:hidden;width:60%;font-size:14px;font-weight:bold}
+#hdStaSubwayLoc > div.btnFindLoc{float:right;position:absolute;top:10px;right:12px;width:20px;height:20px;padding:0;background:url(../img/btnPrev.svg) no-repeat 0 0;background-size:100% 100%;opacity:.3}
+#hdStaSubwayLoc > div.btnFindLoc.on{opacity:1}
+
+/* 노선도 페이지 노선도 영역 */
+#hdStaSubwayMap{display:none;overflow:auto;position:fixed;top:85px;left:0;z-index:100;width:102%;height:95%;background:#fff}
+
+/* #hdStaSubwayMapAll{width:1280px;height:1280px;overflow:auto} */
+#hdStaSubwayMapAll{position:relative;z-index:900;width:1400px;height:1030px}
+#hdStaSubwayMapAll svg{z-index:900}
+#hdStaSubwayMapAll .hdStaMapMenu{display:none;position:absolute;z-index:1000;width:100px;height:100px;margin-left:-50px;margin-top:-50px;background:rgba(0,0,0,.3)}
+#hdStaSubwayMap .btnMapScale{position:fixed;right:10px;bottom:10px;z-index:1000;width:35px}
+#hdStaSubwayMap .btnMapScale ul li{width:35px;height:35px;margin-top:7px;border-radius:50% 50%;background:#364556;font-weight:bold;font-size:25px;line-height:35px;color:#fff;text-align:center}
+#hdStaSubwayMap .btnMapScale ul li:hover{background-color:#363636}
+
+/* 노선도 페이지 환승역의 역선택화면 v1.2.0.150519 추가 */
+#hdStaSubwayMapSelLine{display:none;position:fixed;top:0;left:0;z-index:4990;width:100%;height:100%}
+#hdStaSubwayMapSelLine .btnInfoClose{width:100%;height:100%;background:rgba(0,0,0,.8)}
+#hdStaSubwayMapSelLine .selLine{overflow:auto;position:absolute;top:50%;left:50%;width:90%;max-height:80%;margin-left:-45%;text-align:center}
+#hdStaSubwayMapSelLine .selLine .selTit{height:50px;background:#364556;line-height:52px;font-size:18px;color:#fff;text-align:center}
+#hdStaSubwayMapSelLine .selLine ul{width:100%;margin-top:-1px}
+#hdStaSubwayMapSelLine .selLine ul li{display:none;padding:7px 0;border-top:1px solid #e1e1e1;background:#fff}
+#hdStaSubwayMapSelLine .selLine ul li:hover{background:#e5e5e5}
+#hdStaSubwayMapSelLine .selLine ul li .numIco{font-size:9px}
+#hdStaSubwayMapSelLine .selLine ul li div{display:inline-block;height:35px;line-height:37px;font-size:20px}
+#hdStaSubwayMapSelLine .selLine ul li div:nth-child(1){margin-right:5px;font-size:12px;text-align:center}
+#hdStaSubwayMapSelLine .selLine ul li div:nth-child(3),#hdStaSubwayMapSelLine .selLine ul li div:nth-child(4){display:none}
+
+/* 노선도페이지 시작/도착역 선택화면  v1.2.0.150519 추가 */
+#hdStaSubwayMapSelLine .selStation{display:none;position:absolute;top:50%;left:50%;width:90%;max-height:80%;margin-left:-45%;margin-top:-168px;padding:15px 0 0;background:#fff;text-align:center}
+#hdStaSubwayMapSelLine .selStation .infoStaNum{padding:0 0 5px}
+#hdStaSubwayMapSelLine .selStation .infoStaName{height:30px;margin:5px 0;font-size:30px;line-height:30px;color:#333}
+#hdStaSubwayMapSelLine .selStation .infoStaNameEng{height:12px;font-size:12px;line-height:12px;color:#333}
+#hdStaSubwayMapSelLine .selStation .infoStaAction{overflow:hidden;margin-top:15px;background:#f2f2f2}
+#hdStaSubwayMapSelLine .selStation .infoStaAction div{float:left;width:49.5%;padding:15px 0;border-bottom:1px solid #e1e1e1}
+#hdStaSubwayMapSelLine .selStation .infoStaAction div:nth-child(odd){border-right:1px solid #e1e1e1}
+#hdStaSubwayMapSelLine .selStation .infoStaAction div .icoSel{width:50px;height:50px;margin:0 auto;background:#515151}
+#hdStaSubwayMapSelLine .selStation .infoStaAction div.off .icoSel{background:#c1c1c1}
+#hdStaSubwayMapSelLine .selStation .infoStaAction .btnSelStart .icoSel{-webkit-mask:url(../img/ico_startPoint.svg) no-repeat 50% 50%;-webkit-mask-size:95% 95%}
+#hdStaSubwayMapSelLine .selStation .infoStaAction .btnSelEnd .icoSel{-webkit-mask:url(../img/ico_endPoint.svg) no-repeat 50% 50%;-webkit-mask-size:95% 95%}
+#hdStaSubwayMapSelLine .selStation .infoStaAction .btnSelFav .icoSel{-webkit-mask:url(../img/ico_reset.svg) no-repeat 50% 50%;-webkit-mask-size:95% 95%}
+#hdStaSubwayMapSelLine .selStation .infoStaAction div:active{background:#d4d4d4}
+#hdStaSubwayMapSelLine .selStation .infoStaAction .btnSelInfo .icoSel{-webkit-mask:url(../img/ico_info.svg) no-repeat 50% 50%;-webkit-mask-size:95% 95%}
+#hdStaSubwayMapSelLine .selStation .infoStaAction div .txtSel{margin-top:10px;font-size:13px;color:#2b2b2b}
+
+/* /노선도 페이지의 최단 환승경로 화면 v1.2.0.150519 추가 */
+#hdStaSubwayShowLoc{display:none;position:fixed;top:0;left:0;z-index:4991;width:100%;height:100%}
+#hdStaSubwayShowLoc .btnInfoClose{width:100%;height:100%;background:rgba(0,0,0,.8)}
+#hdStaSubwayShowLoc .showLoc{overflow:auto;position:absolute;top:10%;left:50%;z-index:4991;width:90%;max-height:80%;margin-left:-45%;background:#fff;color:#000;text-align:center}
+#hdStaSubwayShowLoc .locTit{position:absolute;top:10%;left:50%;z-index:4992;width:90%;height:50px;margin-left:-45%;background:#364556;line-height:52px;font-size:18px;color:#fff;text-align:center}
+#hdStaSubwayShowLoc .showLoc .showLocInfo{width:90%;margin:0 auto;padding-top:50px}
+#hdStaSubwayShowLoc .showLoc .showLocInfo *{font-family:'GothamPro-Light','Nanum Barun Gothic',serif;font-weight:400;color:#252525;letter-spacing:-1px}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap{padding:20px 0 15px 10px}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li{overflow:hidden}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li .lineNum{float:left;width:40px;height:40px;border-radius:50% 50%;font-weight:bold;line-height:43px;font-size:9px;color:#fff}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li .staDat{float:left;height:40px;margin-left:15px}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li .staDat p{text-align:left}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li .staDat .txt{height:14px;margin-top:3px;font-size:11px;font-weight:bold;color:#252525}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li .staDat .tit{font-size:18px}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li .staDat .tit span{font-size:13px;color:#727272}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocMap ul li .line{float:left;width:25px;height:15px;margin-left:19px;border-left:2px solid #fff}
+
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocTime{padding:12px 0;border-top:1px solid #c5cacf;font-size:17px}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocTime .locStaLen{font-size:15px;color:#9eaab6}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocPrice{position:relative;padding:0 0 10px}
+
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocPrice ul{overflow:hidden;border-bottom:1px solid #f5f5f5}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocPrice ul li{float:left;position:relative;width:33.33333333333%}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocPrice ul li span{display:block;width:100%;height:25px;line-height:26px;font-size:10px;color:#333;text-align:center}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocPrice ul li span.bdg-1{height:25px;background:#9eaab6;line-height:26px;font-size:11px;color:#fff}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocPrice ul li span.bdg-2{height:20px;background:#f5f5f5;line-height:21px;font-size:9px}
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showLocPrice ul li:last-child{display:none}
+
+#hdStaSubwayShowLoc .showLoc .showLocInfo .showCaution{padding-bottom:12px;font-size:9px;color:#868686}
+#hdStaSubwayShowLoc .showLoc .infoStaOrigin{background:#f5f5f5}
+#hdStaSubwayShowLoc .showLocDummy{display:none}
+
+/* V.1.3.0 전동차 실시간 위치 보기 */
+#hdStaSwPosMenu{height:55px;position:fixed;top:45px;left:0;z-index:500;width:100%;background:#f5f5f5;display:none}
+#hdStaSwPosMenu .swPosMenuTxt{padding:12px 12px 0}
+#hdStaSwPosMenu .swPosMenuTxt .btn_menu{width:30px;height:30px;-webkit-mask:url(../img/ico_menu.svg) no-repeat 50% 50%;-webkit-mask-size:contain;background:#364556;position:absolute;top:12px;left:12px}
+#hdStaSwPosMenu .swPosMenuTxt .line_num{height:41px;border-bottom:2px solid #364556;line-height:34px;font-size:20px;text-indent:45px;color:#656565}
+#hdStaSwPosMenu .swPosMenuTxt .btnRefresh{position:absolute;top:12px;right:12px;width:40px;height:25px;border:2px solid #cacaca;background:#cacaca;line-height:26px;text-align:center;-webkit-border-radius:25px}
+#hdStaSwPosMenu .swPosMenuTxt .btnRefresh .btnRefreshArea{width:25px;height:25px;margin:0 auto;background:url(../img/btnRefresh.png) no-repeat 0 0;background-size:100% 100%}
+#hdStaSwPosMenu .swPosMenuTxt .btnRefresh .btnRefreshArea.on{-webkit-animation:refreshMv .6s;-webkit-animation-delay:0;-webkit-animation-iteration-count:infinite}
+#hdStaSwPosMenu .swPosExtMenu{background:#f5f5f5;display:none}
+#hdStaSwPosMenu .swPosExtMenu ul{padding:0 12px;overflow:hidden}
+#hdStaSwPosMenu .swPosExtMenu ul li{height:40px;border-top:1px solid #d0d6dd;line-height:41px;font-size:14px;text-indent:45px;position:relative;width:50%;float:left}
+#hdStaSwPosMenu .swPosExtMenu ul li.on{text-indent:0;text-align:center;color:#fff;font-weight:700;background:}
+#hdStaSwPosMenu .swPosExtMenu ul li.on .ico_line{display:none}
+#hdStaSwPosMenu .swPosExtMenu ul li:hover{font-weight:800}
+#hdStaSwPosMenu .swPosExtMenu ul li:nth-child(1),#hdStaSwPosMenu .swPosExtMenu ul li:nth-child(2){border-top:0}
+#hdStaSwPosMenu .swPosExtMenu ul li:nth-last-child(1),#hdStaSwPosMenu .swPosExtMenu ul li:nth-last-child(2){border-bottom:2px solid #364556}
+#hdStaSwPosMenu .swPosExtMenu ul li .ico_line{width:6px;height:6px;position:absolute;top:16px;left:15px;border-radius:50% 50%}
+
+#hdStaSwPos{padding-top:100px;display:none}
+#hdStaSwPos ul{}
+#hdStaSwPos ul li{overflow:hidden;height:59px;position:relative;padding:0 12px}
+#hdStaSwPos ul li:nth-child(odd){background:#f5f5f5}
+#hdStaSwPos ul li:nth-child(even){background:#f1f1f1}
+
+#hdStaSwPos .trainArr{width:59px;height:59px;float:left;z-index:100;position:relative;margin-left:-10px}
+#hdStaSwPos .trainArr .icoTrain{display:none;width:45px;height:45px;z-index:102;position:absolute;top:50%;left:50%;margin-left:-22.5px;margin-top:-22.5px}
+#hdStaSwPos .trainArr .icoTrainBack{width:20px;height:25px;background:#fff;z-index:101;position:absolute;top:50%;left:50%;margin-left:-10px;display:none}
+#hdStaSwPos .trainArrDown .icoTrainBack{margin-top:-15px}
+#hdStaSwPos .trainArrUp .icoTrainBack{margin-top:-10px}
+#hdStaSwPos .icoExpress{width:15px;height:15px;border-radius:50% 50%;font-size:5px;position:absolute;left:50%;top:50%;background:#b5363d;color:#fff;line-height:16px;text-align:center;z-index:102;display:none}
+#hdStaSwPos .trainArr.on .icoTrain,
+#hdStaSwPos .trainArr.on .icoTrainBack,
+#hdStaSwPos .icoExpress.on{display:block}
+#hdStaSwPos .lineArr{height:59px;width:1px;border:0;border-left:1px;position:absolute;left:50%;top:0;z-index:100;border-style:solid}
+
+#hdStaSwPos .trainArrDown .icoTrain{-webkit-mask:url(../img/iconDownArrTrain.svg) no-repeat 0 0;-webkit-mask-size:100% 100%}
+#hdStaSwPos .trainArrUp .icoTrain{-webkit-mask:url(../img/iconUpArrTrain.svg) no-repeat 0 0;-webkit-mask-size:100% 100%}
+#hdStaSwPos .trainArrDown .icoExpress{margin-top:7px;margin-left:-16px}
+#hdStaSwPos .trainArrUp .icoExpress{margin-top:-19px;margin-left:8px}
+
+#hdStaSwPos .trainArrStation{margin-left:5px;float:left}
+#hdStaSwPos .trainArrStation .stationName{font-size:20px;margin-top:10px}
+#hdStaSwPos .trainArrStation .stationName .stationSubName{font-size:10px;color:#444}
+#hdStaSwPos .trainArrStation .staNameEng{height:13px;font-size:8px;line-height:15px;color:#767676;letter-spacing:0 !important}
+#hdStaSwPos .trainArrStation .transferLine{overflow:hidden;margin-top:2px;position:absolute;right:12px;top:15px}
+#hdStaSwPos .trainArrStation .transferLine .btnEnterLine{float:left;margin-right:3px;font-size:7px;height:16px;padding:0 4px;color:#fff;border-radius:8px 8px;line-height:17px;text-align:center}

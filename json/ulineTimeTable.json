@@ -1,0 +1,17 @@
+{
+	"U110"	:	{"firstDes1":"-","firstDes2":"05:00","lastDes1":"-","lastDes2":"00:10"},
+	"U111"	:	{"firstDes1":"05:17","firstDes2":"05:01","lastDes1":"00:27","lastDes2":"00:11"},
+	"U112"	:	{"firstDes1":"05:16","firstDes2":"05:03","lastDes1":"00:26","lastDes2":"00:13"},
+	"U113"	:	{"firstDes1":"05:14","firstDes2":"05:04","lastDes1":"00:24","lastDes2":"00:14"},
+	"U114"	:	{"firstDes1":"05:13","firstDes2":"05:06","lastDes1":"00:23","lastDes2":"00:16"},
+	"U115"	:	{"firstDes1":"05:11","firstDes2":"05:07","lastDes1":"00:21","lastDes2":"00:17"},
+	"U117"	:	{"firstDes1":"05:10","firstDes2":"05:09","lastDes1":"00:20","lastDes2":"00:19"},
+	"U118"	:	{"firstDes1":"05:08","firstDes2":"05:10","lastDes1":"00:18","lastDes2":"00:20"},
+	"U119"	:	{"firstDes1":"05:07","firstDes2":"05:11","lastDes1":"00:17","lastDes2":"00:21"},
+	"U120"	:	{"firstDes1":"05:06","firstDes2":"05:13","lastDes1":"00:16","lastDes2":"00:23"},
+	"U121"	:	{"firstDes1":"05:05","firstDes2":"05:14","lastDes1":"00:15","lastDes2":"00:24"},
+	"U122"	:	{"firstDes1":"05:03","firstDes2":"05:15","lastDes1":"00:13","lastDes2":"00:25"},
+	"U123"	:	{"firstDes1":"05:02","firstDes2":"05:17","lastDes1":"00:12","lastDes2":"00:27"},
+	"U124"	:	{"firstDes1":"05:01","firstDes2":"05:18","lastDes1":"00:11","lastDes2":"00:28"},
+	"U125"	:	{"firstDes1":"05:00","firstDes2":"-","lastDes1":"00:10","lastDes2":"-"}
+}
