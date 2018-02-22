@@ -1,4 +1,3 @@
-
 $(document).ready(function(){	
 
 	// 긴급 공지사항 유무를 확인하고 뿌려줍니다.
@@ -19,7 +18,6 @@ $(document).ready(function(){
 
 	// 뒤로가기 버튼을 사용자가 정의하기 위해 차단합니다.
 	navigator.app.overrideBackbutton(true);
-	
 });
 
 $(document).bind("mobileinit", function(){
@@ -32,10 +30,8 @@ $(document).on("scroll",function(){
 });
 
 $(window).load(function(){
-
 	// 뒤로가기 버튼시 앱을 종료할지 페이지 뒤로 갈지 결정
 	document.addEventListener("backbutton", function(){showAppExitConfirm()}, true);
-	
 });
 
 // 앱 활용 변수 객체
@@ -57,14 +53,33 @@ var appVar = {
 // 후다닥 생성
 var huddak = {
 	dom : {
-		headerLoc : $(".headerLoc")
+		loaders : $(".loaders"), // 로더
+		loaderTxt : $(".loader-text"), // 로더 내 텍스트
+		headerLoc : $(".headerLoc"), // 앱 상단바
+		commbox : $("#commLayer") // 상태메세지 박스
+	},
+	fnc : {
+		// 코멘트 박스를 노출합니다.
+		viewCommbox : function(txt){
+			huddak.dom.commbox.html(txt);
+			huddak.dom.commbox.fadeIn(300);
+			backKeyTimer = setTimeout(fncBackKey,2000);
+		},
+		// 역명 치환
+		staNameDiv : function(val){
+			var tmp;
+			if ( val.indexOf("(") > -1 ){
+				tmp = val.split("(");
+				return tmp[0]+'<span class="stationSubName">&nbsp;('+tmp[1]+'</span>';
+			}else{
+				return val;
+			}
+		}
 	}
-
 }
 
 // 역 리스트 ng컨트롤러 생성
 function TrafficListController($scope, $http, $timeout){
-
 	// 좌표를 찾는 함수
     if(navigator.geolocation){ //브라우저에서 웹 지오로케이션 지원 여부 판단    	
     	var geo_options = {
@@ -81,17 +96,14 @@ function TrafficListController($scope, $http, $timeout){
 	function MyPosition(position){
 		appVar.posLat= position.coords.latitude;
 		appVar.posLng = position.coords.longitude;
-
 		// 지하철 정보를 가져옵니다.
 		getData();
-
 		// 현재 위치 지명을 가져옵니다.
 		ajaxGoogleLoad();
-		
 	}
 
 	function posErr(){
-		viewCommBox("안드로이드 설정의 위치를 활성화 해주세요");
+		huddak.fnc.viewCommbox("안드로이드 설정의 위치를 활성화 해주세요");
 		getDataFail();
 		getData();
 	}
@@ -100,90 +112,67 @@ function TrafficListController($scope, $http, $timeout){
 	function ajaxGoogleLoad(){
 	    $http.get("http://maps.googleapis.com/maps/api/geocode/json?latlng="+appVar.posLat+","+appVar.posLng+"&sensor=true").success(
 	    	function(data){
-	    		
 	    		appVar.loadedNowPlace = data.results[3].formatted_address;
 	    		appVar.loadedNowPlaceFull = appVar.loadedNowPlace.replace("한국","").replace("대한민국","").replace("특별시","시").replace("광역시","시");
-
 	    		huddak.dom.headerLoc.html(appVar.loadedNowPlaceFull + " 부근");
-
 	    	}).error(function(){
-	        	
 	        	// 실패시 메시지 표시
 	        	getDataFail();
-	        	viewCommBox("지역 정보를 가져오는데 실패했습니다.");
-
+	        	huddak.fnc.viewCommbox("지역 정보를 가져오는데 실패했습니다.");
 	    	}).finally(function(){
-	    		
 	    		// 지하철 정보를 가져옵니다.
 	    		// getData();
-	    		
 	    	}
 	    );
 	}
 
 	// 데이터 로드 실패시 기본값
 	function getDataFail(){
-		
 		huddak.dom.headerLoc.html("위치 추적실패 (서울역 기준)");
-		viewCommBox("안드로이드 설정의 위치를 활성화 해주세요");
+		huddak.fnc.viewCommbox("안드로이드 설정의 위치를 활성화 해주세요");
 		appVar.posLat = "37.555107";
 		appVar.posLng = "126.970691";
-
 	}
 
 	// 지하철 정보를 가져옵니다.
 	function getData(){
-
 		/* jQuery의 ajax 통신과 거의 유사하다. */
 		$http.get('json/stationData.json').success(
 		function(data)
 		{
 			$scope.subwayData = data;
-
 			for ( var i = 0 ; i < $scope.subwayData.length ; i++){
-
 				$scope.subwayData[i].distance = computeDistance($scope.subwayData[i].posLat,$scope.subwayData[i].posLng,"km");
-
 			}
-			
 		}).error(function(){			
-			$(".loader-text").css("font-size","16px");
-			$(".loader-text").html("Loading...");
-			$(".loaders").fadeOut(200);
-			viewCommBox("지하철 정보를 가져오지 못했습니다.");
+			huddak.dom.loaderTxt.css("font-size","16px").html("Loading...");
+			huddak.dom.loaders.fadeOut(200);
+			huddak.fnc.viewCommbox("지하철 정보를 가져오지 못했습니다.");
 		}).finally(function(){			
-			$(".loader-text").css("font-size","16px");
-			$(".loader-text").html("Loading...");
-			$(".loaders").fadeOut(200);
-
+			huddak.dom.loaderTxt.css("font-size","16px").html("Loading...");
+			huddak.dom.loaders.fadeOut(200);
 		});
-
 	}
 
 	$scope.orderProperty = "no";
 
 	// 지하철 정보가 닫혀 있으면 열면서 로드 , 열려있으면 닫기
-	$scope.realTimeArrive = function(event,idx,name){			
-				
+	$scope.realTimeArrive = function(event,idx,name){
+		var $parent = $(event.target).parent().parent().parent();
 		// 체크후 열려있지 않을때만 실행
-		if ( !$(event.target).parent().parent().parent().hasClass("on") ){
-
-			$(event.target).parent().parent().parent().parent().find("li").removeClass("on");
-			$(event.target).parent().parent().parent().addClass("on");
+		if ( !$parent.hasClass("on") ){
+			$parent.parent().find("li").removeClass("on");
+			$parent.addClass("on");
 			realTimeArriveTrain(event,idx,name);
-			
 		}else{
-
-			$(event.target).parent().parent().parent().removeClass("on");			
-
+			$parent.removeClass("on");			
 		}
-				
 	}
 
 	// 지하철 역 정보를 가져 오는 함수
 	$scope.showStationData = function(idx){
 
-		$(".loaders").fadeIn(200);
+		huddak.dom.loaders.fadeIn(200);
 		$loc = $("#hdStaSubwayInfo .infoCon");
 
 		// 해당역의 역명 / 역번호를 뿌립니다.
@@ -212,7 +201,7 @@ function TrafficListController($scope, $http, $timeout){
 			$loc.find(".info_con3 span").text("개찰구 내 화장실");
 		}
 		
-		// 플랫폰간 횡단 가능 여부
+		// 플랫폼간 횡단 가능 여부
 		if ( $scope.subwayData[idx].cross === "연결안됨" ){
 			$loc.find(".info_con4").css({"background":"url(img/info_cross_type2.gif) no-repeat 50% 50% #fff","background-size":"100% 100%"});
 			$loc.find(".info_con4 span").text("횡단불가");
@@ -258,13 +247,10 @@ function TrafficListController($scope, $http, $timeout){
 						
 			// 찾은 역번호를 6자리로 만듭니다.				
 			if ( stationNumber.length < 6 ) {
-					
 				tmpLen = stationNumber.length;
-
 				for ( var j = 0 ; j < 6 - tmpLen ; j++ ){
 					stationNumber = "0"+stationNumber;						
 				}
-
 			}			
 					
 			//쿼리용 역번호를 만듧니다.
@@ -283,14 +269,12 @@ function TrafficListController($scope, $http, $timeout){
 			// 기본값 실행
 			$loc.find(".infoMenu li").eq(0).click();
 
-
 			// 첫차 막차 시간표를 불러오는 함수
 			function loadStaFirLatTime(lc,sq){
 				
 				if ( $(".infoStaTimetable").html() == "" ){
-
 					// Loader Play!
-					$(".loaders").css("display","block");
+					huddak.dom.loaders.css("display","block");
 
 					$http.get('http://m.bus.go.kr/mBus/subway/getLastcarByStatn.bms?subwayId='+lc+'&statnId='+sq).success(function(data)
 					{
@@ -349,8 +333,8 @@ function TrafficListController($scope, $http, $timeout){
 						}
 
 					}).error(function(){			
-						$(".loaders").fadeOut(200);
-						viewCommBox("첫차/막차 시간표정보를 가져오지 못했습니다.");
+						huddak.dom.loaders.fadeOut(200);
+						huddak.fnc.viewCommbox("첫차/막차 시간표정보를 가져오지 못했습니다.");
 					}).finally(function(){
 						$loc.find(".infoStaCon").css("display","none");
 						$loc.find(".infoStaTimetable").css("display","block");
@@ -362,10 +346,10 @@ function TrafficListController($scope, $http, $timeout){
 						$("#hdStaSubwayInfo .infoCon").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2);
 						$("#hdStaSubwayInfo .btnClose").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2-45);
 						
-						$(".loaders").fadeOut(200);
+						huddak.dom.loaders.fadeOut(200);
 					});				
 				}else{
-					$(".loaders").fadeOut(200);
+					huddak.dom.loaders.fadeOut(200);
 					
 					$loc.find(".infoStaCon").css("display","none");
 					$loc.find(".infoStaTimetable").css("display","block");
@@ -383,7 +367,7 @@ function TrafficListController($scope, $http, $timeout){
 				if ( $(".infoStaGate").html() == "" ){
 
 					// Loader Play!
-					$(".loaders").css("display","block");
+					huddak.dom.loaders.css("display","block");
 
 					$http.get('http://m.bus.go.kr/mBus/subway/getEntrcByInfo.bms?statnId='+sq).success(function(data)
 					{
@@ -418,8 +402,8 @@ function TrafficListController($scope, $http, $timeout){
 						}
 
 					}).error(function(){			
-						$(".loaders").fadeOut(200);
-						viewCommBox("해당 역사정보를 가져오지 못했습니다.");
+						huddak.dom.loaders.fadeOut(200);
+						huddak.fnc.viewCommbox("해당 역사정보를 가져오지 못했습니다.");
 					}).finally(function(){
 						$loc.find(".infoStaCon").css("display","none");
 						$loc.find(".infoStaGate").css("display","block");
@@ -431,10 +415,10 @@ function TrafficListController($scope, $http, $timeout){
 						$("#hdStaSubwayInfo .infoCon").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2);
 						$("#hdStaSubwayInfo .btnClose").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2-45);
 						
-						$(".loaders").fadeOut(200);
+						huddak.dom.loaders.fadeOut(200);
 					});				
 				}else{
-					$(".loaders").fadeOut(200);
+					huddak.dom.loaders.fadeOut(200);
 					
 					$loc.find(".infoStaCon").css("display","none");
 					$loc.find(".infoStaGate").css("display","block");
@@ -448,8 +432,8 @@ function TrafficListController($scope, $http, $timeout){
 
 		}else{
 
-			$(".loader-text").css("font-size","16px");
-			$(".loader-text").html("Loading...");
+			huddak.dom.loaderTxt.css("font-size","16px");
+			huddak.dom.loaderTxt.html("Loading...");
 			$(".infoMenu").css("display","none");
 
 			if ( lineCode == "0116" ){				
@@ -461,7 +445,7 @@ function TrafficListController($scope, $http, $timeout){
 					$http.get('json/ulineTimeTable.json').success(
 						function(data){appVar.ulineTable = data;						
 					}).error(function(){
-						viewCommBox("의정부 경전철 데이터를 가져오지 못했습니다1.");
+						huddak.fnc.viewCommbox("의정부 경전철 데이터를 가져오지 못했습니다1.");
 					}).finally(function(){						
 						showUlineInfo(stationNumber);
 					});
@@ -481,7 +465,7 @@ function TrafficListController($scope, $http, $timeout){
 					$http.get('json/everlineTimeTable.json').success(
 						function(data){appVar.everlineTable = data;						
 					}).error(function(){
-						viewCommBox("용인 경전철 데이터를 가져오지 못했습니다1.");
+						huddak.fnc.viewCommbox("용인 경전철 데이터를 가져오지 못했습니다1.");
 					}).finally(function(){						
 						showEverlineInfo(stationNumber);
 					});
@@ -544,7 +528,7 @@ function TrafficListController($scope, $http, $timeout){
 	// 실시간 정보를 가져옵니다.
 	var realTimeArriveTrain = function(event,idx,name){
 
-		$(".loaders").fadeIn(200);
+		huddak.dom.loaders.fadeIn(200);
 
 		// 노선코드를 저장합니다.
 		lineCode = $(event.target).parent().parent().parent().attr("data-line");
@@ -726,11 +710,11 @@ function TrafficListController($scope, $http, $timeout){
 				}
 
 			}).error(function(){
-				$(".loaders").fadeOut(200);
-				viewCommBox("실시간 정보를 가져오지 못했습니다.");
+				huddak.dom.loaders.fadeOut(200);
+				huddak.fnc.viewCommbox("실시간 정보를 가져오지 못했습니다.");
 			}).finally(function(){
 				$(".btnRefreshArea").removeClass("on");
-				$(".loaders").fadeOut(200);
+				huddak.dom.loaders.fadeOut(200);
 			});	
 
 
@@ -838,11 +822,11 @@ function n_subwayStaRtnPos(val,idx,loc){
 						
 					}).error(function(){
 						$(".btnRefreshArea").removeClass("on");
-						$(".loaders").fadeOut(200);
-						viewCommBox("시간표 정보를 가져오지 못했습니다.");
+						huddak.dom.loaders.fadeOut(200);
+						huddak.fnc.viewCommbox("시간표 정보를 가져오지 못했습니다.");
 					}).finally(function(){
 						$(".btnRefreshArea").removeClass("on");
-						$(".loaders").fadeOut(200);
+						huddak.dom.loaders.fadeOut(200);
 					});
 				}
 
@@ -851,7 +835,7 @@ function n_subwayStaRtnPos(val,idx,loc){
 					$http.get('http://openapi.seoul.go.kr:8088/sample/json/SearchArrivalInfoByIDService/1/2/'+$scope.subwayData[idx].stationCode+'/2/'+nowDay).success(function(data)
 					{
 						$(".btnRefreshArea").addClass("on");
-						$(".loaders").css("dispaly","block");
+						huddak.dom.loaders.css("dispaly","block");
 					
 						// 데이터가 있을때만
 						if ( data.hasOwnProperty("SearchArrivalInfoByIDService") ){
@@ -876,18 +860,18 @@ function n_subwayStaRtnPos(val,idx,loc){
 						
 					}).error(function(){
 						$(".btnRefreshArea").removeClass("on");
-						$(".loaders").fadeOut(200);
-						viewCommBox("시간표 정보를 가져오지 못했습니다.");
+						huddak.dom.loaders.fadeOut(200);
+						huddak.fnc.viewCommbox("시간표 정보를 가져오지 못했습니다.");
 					}).finally(function(){
 						$(".btnRefreshArea").removeClass("on");
-						$(".loaders").fadeOut(200);
+						huddak.dom.loaders.fadeOut(200);
 					});
 				}
 
 			}else if( lineCode == "0116" ) {
 				//의정부 경전철
-				$(".loader-text").css("font-size","16px");
-				$(".loader-text").html("Loading...");
+				huddak.dom.loaderTxt.css("font-size","16px");
+				huddak.dom.loaderTxt.html("Loading...");
 
 				if ( appVar.ulineTable === null ){
 					
@@ -906,7 +890,7 @@ function n_subwayStaRtnPos(val,idx,loc){
 					}).error(function(){			
 						
 						$trainList.html('<li class="font_nanumBarunL">데이터를 가져오지 못했습니다.</li>');
-						viewCommBox("의정부 경전철 데이터를 가져오지 못했습니다.");
+						huddak.fnc.viewCommbox("의정부 경전철 데이터를 가져오지 못했습니다.");
 
 					}).finally(function(){						
 						showUlineData($trainList,stationNumber);
@@ -920,8 +904,7 @@ function n_subwayStaRtnPos(val,idx,loc){
 
 			}else if( lineCode == "0119" ) {
 				// 용인 경전철
-				$(".loader-text").css("font-size","16px");
-				$(".loader-text").html("Loading...");
+				huddak.dom.loaderTxt.css("font-size","16px").html("Loading...");
 
 				// 다음역이 없을때를 방지한 예외 처리
 				var arrStation = {
@@ -944,7 +927,7 @@ function n_subwayStaRtnPos(val,idx,loc){
 					}).error(function(){			
 						
 						$trainList.html('<li class="font_nanumBarunL">데이터를 가져오지 못했습니다.</li>');
-						viewCommBox("용인 경전철 데이터를 가져오지 못했습니다.");
+						huddak.fnc.viewCommbox("용인 경전철 데이터를 가져오지 못했습니다.");
 
 					}).finally(function(){						
 						showEverlineData($trainList,stationNumber,arrStation);
@@ -958,7 +941,7 @@ function n_subwayStaRtnPos(val,idx,loc){
 			}else{
 
 				$trainList.html('<li class="font_nanumBarunL">도착정보를 준비중입니다</li>');				
-				$(".loaders").fadeOut(200);
+				huddak.dom.loaders.fadeOut(200);
 
 			}
 
@@ -1040,7 +1023,7 @@ function showUlineData(con,num){
 		}
 	}
 	$(".btnRefreshArea").removeClass("on");
-	$(".loaders").fadeOut(200);
+	huddak.dom.loaders.fadeOut(200);
 }
 
 function showUlineInfo(stationCode){
@@ -1111,7 +1094,7 @@ function showUlineInfo(stationCode){
 			$("#hdStaSubwayInfo .infoCon").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2);
 			$("#hdStaSubwayInfo .btnClose").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2-45);
 				
-			$(".loaders").fadeOut(200);
+			huddak.dom.loaders.fadeOut(200);
 }
 
 // 용인 경전철 데이터 로딩
@@ -1193,7 +1176,7 @@ function showEverlineData(con,num,arrStation){
 		}
 	}
 	$(".btnRefreshArea").removeClass("on");
-	$(".loaders").fadeOut(200);
+	huddak.dom.loaders.fadeOut(200);
 }
 
 function rtnTimeTable(nowDate,num,arrow){
@@ -1338,7 +1321,7 @@ function showEverlineInfo(stationCode){
 			$("#hdStaSubwayInfo .infoCon").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2);
 			$("#hdStaSubwayInfo .btnClose").css("margin-top",-$("#hdStaSubwayInfo .infoCon").height()/2-45);
 				
-			$(".loaders").fadeOut(200);
+			huddak.dom.loaders.fadeOut(200);
 
 }
 
@@ -1454,7 +1437,7 @@ function viewSelMenu(con){
 			$("#hdStaAbout").stop(true,false).animate({"margin-left":"-45%"},200);
 			break;	
 		default :
-			viewCommBox("서비스를 준비중입니다.");
+			huddak.fnc.viewCommbox("서비스를 준비중입니다.");
 			return false;		
 	}
 
@@ -1471,11 +1454,7 @@ function viewSelMenuBack(con){
 	$(con).stop(true,false).stop(true,false).animate({"margin-left":"55%"},300);
 }
 
-function viewCommBox(text){
-	$("#commLayer").html(text);
-	$("#commLayer").fadeIn(300);
-	backKeyTimer = setTimeout(fncBackKey,2000);
-}
+
 
 var backKeySta = false;
 var backKeyTimer;
@@ -1483,7 +1462,7 @@ var backKeyTimer;
 // CLient와 Cordova 상에서의 확인창 분기
 function showAppExitConfirm(){
 	
-	if ( $(".loaders").css("display") !== "none" || $("#hdStaSubwayInfo").css("display") !== "none" || $("#hdStaMenu").css("display") !== "none" || $("#notice").css("display") !== "none"){
+	if ( huddak.dom.loaders.css("display") !== "none" || $("#hdStaSubwayInfo").css("display") !== "none" || $("#hdStaMenu").css("display") !== "none" || $("#notice").css("display") !== "none"){
 
 		$(".loaders, #hdStaSubwayInfo, #hdStaMenu, #notice").fadeOut(300);
 
@@ -1581,7 +1560,7 @@ function showMapMenu(station,evt) {
 		// 역정보를 보여주는 버튼 이벤트
 		$loc.find(".btnSelInfo").unbind("click");
 		$loc.find(".btnSelInfo").click(function(){
-			$(".loaders").fadeIn(200);
+			huddak.dom.loaders.fadeIn(200);
 			$(".selLine"+station).find(".btnInfo").click();
 		});
 	}
@@ -1597,7 +1576,7 @@ function setStation(action,num,name){
 
 			if ( appVar.stationStart === num ){ // 기존과 같은 역 설정시
 
-				viewCommBox("이미 시작역으로 설정되었습니다.");
+				huddak.fnc.viewCommbox("이미 시작역으로 설정되었습니다.");
 
 			}else{ // 기존역과 다르거나 설정이 되어있지 않을때 
 
@@ -1610,7 +1589,7 @@ function setStation(action,num,name){
 				}else{ // 도착역이 비어있지 않을때
 
 					if( appVar.stationEnd === num ){
-						viewCommBox("이미 도착역으로 설정되었습니다.");
+						huddak.fnc.viewCommbox("이미 도착역으로 설정되었습니다.");
 					}else{
 						appVar.stationStart = num;
 						$("#hdStaSubwayLoc .locStart .txtStation").html(name);
@@ -1629,7 +1608,7 @@ function setStation(action,num,name){
 			// 
 			if ( appVar.stationEnd === num ){ // 기존과 같은 역 설정시
 
-				viewCommBox("이미 도착역으로 설정되었습니다.");
+				huddak.fnc.viewCommbox("이미 도착역으로 설정되었습니다.");
 
 			}else{ // 기존역과 다르거나 설정이 되어있지 않을때 
 
@@ -1642,7 +1621,7 @@ function setStation(action,num,name){
 				}else{ // 도착역이 비어있지 않을때
 
 					if( appVar.stationStart === num ){
-						viewCommBox("이미 시작역으로 설정되었습니다.");
+						huddak.fnc.viewCommbox("이미 시작역으로 설정되었습니다.");
 					}else{
 						appVar.stationEnd = num;
 						$("#hdStaSubwayLoc .locEnd .txtStation").html(name);
@@ -1665,7 +1644,7 @@ function setStation(action,num,name){
 // 상단 경로바 우측버튼을 통해 검색한 경로를 재탐색합니다.
 function findLoc(){
 	if (  appVar.stationStart == null || appVar.stationEnd == null ){
-		viewCommBox("시작역 또는 도착역이 설정되지 않았습니다.");
+		huddak.fnc.viewCommbox("시작역 또는 도착역이 설정되지 않았습니다.");
 	}else{
 		// 최단 경로 데이터를 불러옵니다.
 		loadStationLoc(appVar.stationStart,appVar.stationEnd);
@@ -1675,7 +1654,7 @@ function findLoc(){
 // 최단거리 경로 검색을 하는 함수 입니다.
 function loadStationLoc(startPos,endPos){
 
-	$(".loaders").fadeIn(100);
+	huddak.dom.loaders.fadeIn(100);
 	var nowDate = new Date();
 
 	// 최단 거리 검색은 도시철도공사 홈페이지를 이용합니다.
@@ -1769,12 +1748,12 @@ function loadStationLoc(startPos,endPos){
 
 		
 	}).fail(function(){
-		viewCommBox("최단경로를 찾는데 실패했습니다.");
-		$(".loaders").fadeOut(100);
+		huddak.fnc.viewCommbox("최단경로를 찾는데 실패했습니다.");
+		huddak.dom.loaders.fadeOut(100);
 	}).done(function(){
 		$("#hdStaSubwayShowLoc").fadeIn(100);
 		$(".btnFindLoc").addClass("on");
-		$(".loaders").fadeOut(100);
+		huddak.dom.loaders.fadeOut(100);
 	});
 
 }
@@ -1822,7 +1801,7 @@ function resetStation(){
 	$("#hdStaSubwayLoc .txtStation").html("미지정");
 	$("#hdStaSubwayMapSelLine .btnInfoClose").click();
 	$(".btnFindLoc").removeClass("on");
-	viewCommBox('출발/도착역이 초기화 되었습니다.');
+	huddak.fnc.viewCommbox('출발/도착역이 초기화 되었습니다.');
 
 }
 
@@ -1834,13 +1813,13 @@ function mapScaleUp(val){
 		if ( $target.width() < 4000 ){
 			$target.css({"width":$target.width() * 1.2 ,"height":$target.height() * 1.2});
 		}else{
-			viewCommBox('노선도 확대치가 최대 입니다.');
+			huddak.fnc.viewCommbox('노선도 확대치가 최대 입니다.');
 		}
 	}else{
 		if ( $target.width() > 1401 ){
 			$target.css({"width":$target.width() * .8 ,"height":$target.height() * .8});
 		}else{
-			viewCommBox('노선도 확대치 기본값 입니다.');
+			huddak.fnc.viewCommbox('노선도 확대치 기본값 입니다.');
 		}
 	}
 
@@ -1859,7 +1838,7 @@ function releaseTrainPos(lineNum,posName){
 	var idx = 0;
 
 	// Loader를 실행합니다.
-	$(".loaders").fadeIn(100);
+	huddak.dom.loaders.fadeIn(100);
 	// 새로고침 버튼을 활성화 합니다.
 	$("#hdStaSwPosMenu .btnRefreshArea").addClass("on");
 	// 노선선택 메뉴가 펼쳐져 있다면 닫습니다.
@@ -1923,7 +1902,7 @@ function releaseTrainPos(lineNum,posName){
 				+'		<div class="lineArr"></div>'
 				+'	</div>'
 				+'	<div class="trainArrStation">'
-				+'		<div class="stationName font_nanumBarunL">'+staNameDiv(data.resultList[i].statnNm)+'</div>'
+				+'		<div class="stationName font_nanumBarunL">'+huddak.fnc.staNameDiv(data.resultList[i].statnNm)+'</div>'
 				+'		<div class="staNameEng font_GothamL">'+staId2Code(data.resultList[i])+'</div>'
 				+'		<div class="transferLine"></div>'
 				+'	</div>'
@@ -1960,15 +1939,15 @@ function releaseTrainPos(lineNum,posName){
 			}
 		
 		}else{
-			viewCommBox("실시간 열차 위치를 찾는데 실패했습니다.");	
+			huddak.fnc.viewCommbox("실시간 열차 위치를 찾는데 실패했습니다.");	
 		}
 		
 	}).fail(function(){
-		viewCommBox("실시간 열차 위치를 찾는데 실패했습니다.");
+		huddak.fnc.viewCommbox("실시간 열차 위치를 찾는데 실패했습니다.");
 		$("#hdStaSwPosMenu .btnRefreshArea").removeClass("on");
-		$(".loaders").fadeOut(100);
+		huddak.dom.loaders.fadeOut(100);
 	}).done(function(){
-		$(".loaders").fadeOut(100);
+		huddak.dom.loaders.fadeOut(100);
 		$("#hdStaSwPosMenu .btnRefreshArea").removeClass("on");
 
 		// 기준역이 가운데 오게 설정
@@ -2011,16 +1990,7 @@ function staId2Code(val){
 
 }
 
-// 역명 치환
-function staNameDiv(val){
-	var tmp;
-	if ( val.indexOf("(") > -1 ){
-		tmp = val.split("(");
-		return tmp[0]+'<span class="stationSubName">&nbsp;('+tmp[1]+'</span>';
-	}else{
-		return val;
-	}
-}
+
 
 // 호선명 치환
 function lineDiv(val){
